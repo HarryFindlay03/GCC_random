@@ -1,0 +1,5 @@
+bin/
+build/
+.vscode/
+
+random_optimizer
