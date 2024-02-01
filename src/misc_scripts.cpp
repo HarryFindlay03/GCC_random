@@ -58,7 +58,7 @@ void generate_benchmark_compile_strings(const std::string& compile_filename, con
         benchmark_compile_string.append(temp.substr(0, i));
         benchmark_compile_string.append(" polybench-c-3.2/utilities/polybench.c ");
         benchmark_compile_string.append(temp);
-        benchmark_compile_string.append(" -o bin/random_optimizer_output/" + program_name + "/" + program_name + "_");
+        benchmark_compile_string.append(" -DPOLYBENCH_TIME -o bin/random_optimizer_output/" + program_name + "/" + program_name + "_");
 
         default_string.append(benchmark_compile_string);
         output_file << default_string << std::endl;

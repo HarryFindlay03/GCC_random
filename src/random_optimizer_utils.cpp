@@ -21,16 +21,21 @@ int read_opt_file(const std::string& filename, std::vector<std::string>& optimis
 }
 
 
-void apply_optimisation(std::string& compile_string, const std::vector<std::string>& optimisation_strings, int num_optimisations)
+int read_benchmarks(const std::string& benchmark_filename, std::vector<std::string>& benchmarks)
 {
-    /* random choice in optimisation strings*/
-    int ran_choice = rand() % num_optimisations + 1;
-    std::string to_apply = optimisation_strings[ran_choice] + " ";
+    std::string line;
+    std::ifstream benchmark_file(benchmark_filename);
 
-    /* append to compile string */
-    compile_string.append(to_apply);
+    if(benchmark_file.is_open())
+    {
+        while(getline(benchmark_file, line))
+        {
+            benchmarks.push_back(line);
+        }
+    } else return 0;
 
-    return;
+    benchmark_file.close();
+    return 1;
 }
 
 
@@ -67,7 +72,7 @@ void generate_random_optimisation_string(const std::vector<std::string>& optimis
     int i, n;
     n = optimisations.size();
 
-    for(i = 0; i < n; i++)
+    for(i = 0; i < num_to_apply; i++)
     {
         ran = rand() % n + 1;
         optimisation_string.append(" " + optimisations[ran]);
@@ -93,12 +98,11 @@ int compile_and_log_all_benchmarks(const std::vector<std::string>& benchmarks, c
     } else return 0;
 
 
-    std::string program_name;
-    std::string optimisation_string;
     int i, j, n;
     n = benchmarks.size();
     for(i = 0; i < n; i++)
     {
+        std::string program_name;
         // get compile string for benchmark
         if(!(get_program_name(benchmarks[i], program_name)))
         {
@@ -106,57 +110,74 @@ int compile_and_log_all_benchmarks(const std::vector<std::string>& benchmarks, c
             return 0;
         }
 
-        // create correct folder structure
+        // create correct folder structure for program output
         std::string create_folder_cmd("mkdir bin/random_optimizer_output/" + program_name);
         std::system(create_folder_cmd.c_str());
+
+        // create output file for each benchmark program
+        std::string output_filename("data/random_optimizer_output/" + program_name + ".txt");
+        std::ofstream output_file(output_filename);
+
+        if(!output_file.is_open())
+        {
+            std::cout << "FILE OPEN ERROR!" << std::endl;
+            return 0;
+        }
 
         // generate number of programs per benchmark
         for(j = 0; j < num_per_benchmark; j++)
         {
             // get random optimisation string
+            std::string optimisation_string;
             generate_random_optimisation_string(optimisations, optimisation_string, num_optimisations_to_apply);
 
             // compile and execute random optimisation string
             std::string exec_string = benchmark_compile_strings[i] + std::to_string(j) + optimisation_string;
             std::system(exec_string.c_str());
 
-            /* TODO - log optimisations in the correct place */
+            // logging to output file
+            output_file << j << ": " << optimisation_string << std::endl;
         }
+
+        output_file.close();
     }        
 
     return 1;
 }
 
 
-// ensure compile string is formatted correctly
-void compile_program(std::string& compile_string, int program_number)
+int run_benchmarks_with_logging(const std::vector<std::string>& benchmarks, int num_per_benchmark)
 {
-    int buff_size = compile_string.size() + std::to_string(program_number).size() + 2;
+    /* create tmp folder - this will be deleted at the end of the run */
+    std::system("mkdir tmp");
 
-    char buff[buff_size];
-    std::snprintf(buff, sizeof(buff), compile_string.c_str(), program_number);
-    std::system(buff);
+    std::string program_name;
 
-    /* output buff to a file */
-    std::ofstream output_file;
-    output_file.open("data/compile_strings.txt", std::ios::app);
-    output_file << program_number << ":" << buff << std::endl;
-    output_file.close();
+    int i, j, n;
+    n = benchmarks.size();
 
-    return;
-}
-
-
-void run_programs(int num_programs)
-{
-    int i;
-    for(i = 0; i < num_programs; i++)
+    for(i = 0; i < n; i++)
     {
-        char buff[100];
-        std::snprintf(buff, sizeof(buff), "time ./bin/random_%d", i);
+        if(!(get_program_name(benchmarks[i], program_name)))
+        {
+            std::cout << "ERROR READING PROGRAM NAME." << std::endl;
+            return 0;
+        }
 
-        std::system(buff);
+        for(j = 0; j < num_per_benchmark; j++)
+        {
+            // formatting
+            std::string exec_string = "bin/random_optimizer_output/" + program_name + "/" + program_name + "_" + std::to_string(j);
+            exec_string.append(" > tmp/" + program_name + "_" + std::to_string(j));
+
+            // running
+            std::system(exec_string.c_str());            
+        }
     }
 
-    return;
+    /* TODO - collect the logging data */
+
+    std::system("rm -rf tmp");
+
+    return 1;
 }

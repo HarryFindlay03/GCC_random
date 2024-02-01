@@ -1,5 +1,9 @@
 bin/
 build/
+data/random_optimizer_output/
+tmp/
 .vscode/
+
+.DS_Store
 
 random_optimizer

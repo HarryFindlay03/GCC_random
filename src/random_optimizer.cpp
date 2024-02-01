@@ -2,6 +2,7 @@
 
 #include "random_optimizer.hpp"
 
+/* TODO - not applying the optimisations correctly */
 
 int main(int argc, char* argv[])
 {
