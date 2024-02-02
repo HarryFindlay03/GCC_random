@@ -1,21 +1,5 @@
 #include "misc_scripts.hpp"
 
-int read_benchmarks(const std::string& benchmark_filename, std::vector<std::string>& benchmarks)
-{
-    std::string line;
-    std::ifstream benchmark_file(benchmark_filename);
-
-    if(benchmark_file.is_open())
-    {
-        while(getline(benchmark_file, line))
-        {
-            benchmarks.push_back(line);
-        }
-    } else return 0;
-
-    benchmark_file.close();
-    return 1;
-}
 
 void generate_benchmark_compile_strings(const std::string& compile_filename, const std::vector<std::string>& benchmarks)
 {
