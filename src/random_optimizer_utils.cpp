@@ -146,36 +146,89 @@ int compile_and_log_all_benchmarks(const std::vector<std::string>& benchmarks, c
 }
 
 
-int run_benchmarks_with_logging(const std::vector<std::string>& benchmarks, int num_per_benchmark)
+int run_benchmarks_with_logging(const std::vector<std::string>& benchmarks, const std::vector<std::string>& benchmarks_to_test, int num_per_benchmark)
 {
     /* create tmp folder - this will be deleted at the end of the run */
     std::system("mkdir tmp");
 
     std::string program_name;
 
-    int i, j, n;
-    n = benchmarks.size();
+    int i, j, x, n, test_n;
+    n = benchmarks_to_test.size();
+    test_n = benchmarks.size();
 
     for(i = 0; i < n; i++)
     {
-        if(!(get_program_name(benchmarks[i], program_name)))
+        /* checking benchmarks_to_test name is valid */
+        std::string curr_benchmark = benchmarks_to_test[i];
+        int valid = 0;
+
+        for(x = 0; x < test_n; x++)
         {
-            std::cout << "ERROR READING PROGRAM NAME." << std::endl;
+            if (!(get_program_name(benchmarks[x], program_name)))
+            {
+                std::cout << "ERROR READING PROGRAM NAME." << std::endl;
+                return 0;
+            }
+
+            if(program_name == curr_benchmark)
+            {
+                valid = 1;
+                break;
+            }
+        }
+
+        if(!valid)
+        {
+            std::cout << curr_benchmark << " is not a valid benchmark name. skipping." << std::endl;
+            continue;
+        }
+
+        // opening the output file
+        std::string output_filename = "data/random_optimizer_output/" + program_name + "_logging.txt";
+        std::ofstream my_output_file(output_filename);
+
+        if(!my_output_file.is_open())
+        {
+            std::cout << "PERFORMANCE LOGGING: FILE ERROR." << std::endl;
             return 0;
         }
+        my_output_file << "program_number,exec_time" << std::endl;
 
         for(j = 0; j < num_per_benchmark; j++)
         {
             // formatting
-            std::string exec_string = "bin/random_optimizer_output/" + program_name + "/" + program_name + "_" + std::to_string(j);
-            exec_string.append(" > tmp/" + program_name + "_" + std::to_string(j));
+            std::string fmt_program_name = program_name + "_" + std::to_string(j);
+            std::string exec_string = "bin/random_optimizer_output/" + program_name + "/" + fmt_program_name;
+            exec_string.append(" > tmp/" + fmt_program_name + ".txt");
 
             // running
-            std::system(exec_string.c_str());            
+            std::system(exec_string.c_str());
+
+            /* collect logging data */
+            std::string input_filename = "tmp/" + fmt_program_name + ".txt";
+            std::ifstream my_input_file(input_filename);
+
+            if(!my_input_file.is_open())
+            {
+                std::cout << "PERFORMANCE LOGGING: FILE ERROR." << std::endl;
+                return 0;
+            }
+
+            std::string line;
+            while(getline(my_input_file, line))
+            {
+                my_output_file << j << "," << line << std::endl;
+            }
+
+            my_input_file.close();
         }
+
+        my_output_file.close();
     }
 
     /* TODO - collect the logging data */
+
 
     std::system("rm -rf tmp");
 

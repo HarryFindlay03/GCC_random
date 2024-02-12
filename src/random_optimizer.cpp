@@ -18,7 +18,9 @@ int main(int argc, char* argv[])
     std::vector<std::string> benchmarks;
 
     read_benchmarks(benchmark_filename, benchmarks);
-    generate_benchmark_compile_strings(compile_filename, benchmarks);
+
+    /* WARNING: uncomment here requires misc_scripts.o to be passed to compiler*/
+    // generate_benchmark_compile_strings(compile_filename, benchmarks);
 
     /* getting optimisations that we can apply */
     int num_optimisations;

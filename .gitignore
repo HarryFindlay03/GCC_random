@@ -3,7 +3,10 @@ build/
 data/random_optimizer_output/
 tmp/
 .vscode/
+.env/
 
 .DS_Store
 
 random_optimizer
+run_programs
+tmp.txt

@@ -71,10 +71,11 @@ int compile_and_log_all_benchmarks(const std::vector<std::string>& benchmarks, c
  * @brief runs all the benchmarks with logging once compilation has been completed
  * 
  * @param benchmarks available benchmarks to the program
+ * @param benchmarks_to_test benchmarks to run and log
  * @param num_per_benchmark number of programs compiled per benchmark
  * 
  */
-int run_benchmarks_with_logging(const std::vector<std::string>& benchmarks, int num_per_benchmark);
+int run_benchmarks_with_logging(const std::vector<std::string>& benchmarks, const std::vector<std::string>& benchmarks_to_test, int num_per_benchmark);
 
 
 #endif
