@@ -6,7 +6,7 @@ clear_bin:
 	rm -rf bin/random_optimizer_output/*
 
 generate_folder_structure:
-	if [ ! -d build ]; then mkdir -p build; fi; if [ ! -d bin ]; then mkdir -p bin; fi; if [ ! -d bin/random_optimizer_output ]; then mkdir -p bin/random_optimizer_output; fi; if [ ! -d data/random_optimizer_output ]; then mkdir -p data/random_optimizer_output; fi
+	if [ ! -d build ]; then mkdir -p build; fi; if [ ! -d bin ]; then mkdir -p bin; fi; if [ ! -d bin/random_optimizer_output ]; then mkdir -p bin/random_optimizer_output; fi; if [ ! -d data/random_optimizer_output ]; then mkdir -p data/random_optimizer_output; fi; if [ ! -d bin/tmp ]; then mkdir -p bin/tmp; fi
 
 misc_scripts.o:
 	g++-13 -c -I include/ src/misc_scripts.cpp -o build/misc_scripts.o

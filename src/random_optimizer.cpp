@@ -19,21 +19,31 @@ int main(int argc, char* argv[])
 
     read_benchmarks(benchmark_filename, benchmarks);
 
+    std::string fmt_string;
+    std::string benchmark_to_fmt = "dynprog";
+
+    if(format_benchmark_string(fmt_string, benchmark_to_fmt, benchmarks))
+        std::cout << "formatted benchmark string: " << fmt_string << std::endl;
+
+    run_given_string(fmt_string, benchmark_to_fmt);
+
+
+
     /* WARNING: uncomment here requires misc_scripts.o to be passed to compiler*/
     // generate_benchmark_compile_strings(compile_filename, benchmarks);
 
-    /* getting optimisations that we can apply */
-    int num_optimisations;
-    std::vector<std::string> optimisations;
-    std::string optimisation_filename("data/optimisations.txt");
-    if(!(num_optimisations = read_opt_file(optimisation_filename, optimisations)))
-    {
-        std::cout << "FILE READ ERROR!" << std::endl;
-        std::exit(-1);
-    }
+    // /* getting optimisations that we can apply */
+    // int num_optimisations;
+    // std::vector<std::string> optimisations;
+    // std::string optimisation_filename("data/optimisations.txt");
+    // if(!(num_optimisations = read_opt_file(optimisation_filename, optimisations)))
+    // {
+    //     std::cout << "FILE READ ERROR!" << std::endl;
+    //     std::exit(-1);
+    // }
 
-    /* now we can apply random optimisations to the programs */
-    compile_and_log_all_benchmarks(benchmarks, optimisations, 10, 10);
+    // /* now we can apply random optimisations to the programs */
+    // compile_and_log_all_benchmarks(benchmarks, optimisations, 10, 10);
 
     return 1;
 }

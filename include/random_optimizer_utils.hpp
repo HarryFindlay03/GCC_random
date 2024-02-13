@@ -9,6 +9,14 @@
 #include <vector>
 #include <ctime>
 
+#define DEFAULT_BENCHMARK_COMPILE_STRING_LOCATION "data/benchmark_compile_strings.txt"
+#define DEFAULT_BENCHMARK_LIST_LOCATION "data/benchmark_list.txt"
+#define DEFAULT_OPTIMISATIONS_LIST_LOCATION "data/optimisations.txt"
+
+#define DEFAULT_OUTPUT_LOCATION "bin/tmp/"
+
+#endif
+
 
 /**
  * @brief read file containing available optimisations from GCC
@@ -35,12 +43,12 @@ int read_benchmarks(const std::string& filename, std::vector<std::string>& bench
 /**
  * @brief get program name from benchmark_list txt file provided from PolyBench
  * 
- * @param benchmark_string string from PolyBench file
  * @param program_name string to fill with program name
+ * @param benchmark_string string from PolyBench file
  * 
  * @return int
  */
-int get_program_name(const std::string& benchmark_string, std::string& program_name);
+int get_program_name(std::string& program_name, const std::string& benchmark_string);
 
 
 /**
@@ -51,7 +59,7 @@ int get_program_name(const std::string& benchmark_string, std::string& program_n
  * @param num_to_apply number of optimisations to apply with optimisation string
  * 
  */
-void generate_random_optimisation_string(const std::vector<std::string>& optimisations, std::string& optimisation_string, int num_to_apply);
+void generate_random_optimisation_string(std::string& optimisation_string, const std::vector<std::string>& optimisations, int num_to_apply);
 
 
 /**
@@ -77,5 +85,23 @@ int compile_and_log_all_benchmarks(const std::vector<std::string>& benchmarks, c
  */
 int run_benchmarks_with_logging(const std::vector<std::string>& benchmarks, const std::vector<std::string>& benchmarks_to_test, int num_per_benchmark);
 
+/**
+ * @brief format a compile string w.r.t passed benchmark to format. Output location specificed by DEFAULT_OUTPUT_LOCATION.
+ * 
+ * @param fmt_benchmark_string string to be updated.
+ * @param benchmark_to_fmt specific benchmark to format.
+ * @param benchmarks all benchmarks available.
+ * 
+ * @return int 
+ */
+int format_benchmark_string(std::string& fmt_benchmark_string, const std::string& benchmark_to_fmt, const std::vector<std::string>& benchmarks);
 
-#endif
+/**
+ * @brief runs given string and returns the execution time
+ * 
+ * @param compile_string 
+ * @param program_name
+ * 
+ * @return double 
+ */
+double run_given_string(const std::string& compile_string, const std::string& program_name);

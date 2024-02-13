@@ -39,7 +39,7 @@ int read_benchmarks(const std::string& benchmark_filename, std::vector<std::stri
 }
 
 
-int get_program_name(const std::string& benchmark_string, std::string& program_name)
+int get_program_name(std::string& program_name, const std::string& benchmark_string) 
 {
     int i, j;
     
@@ -64,7 +64,8 @@ int get_program_name(const std::string& benchmark_string, std::string& program_n
 }
 
 
-void generate_random_optimisation_string(const std::vector<std::string>& optimisations, std::string& optimisation_string, int num_to_apply)
+/* TODO: rewrite this function to update a vector of strings of optimisations */
+void generate_random_optimisation_string(std::string& optimisation_string, const std::vector<std::string>& optimisations, int num_to_apply)
 {
     /* random number */
     int ran;
@@ -104,7 +105,7 @@ int compile_and_log_all_benchmarks(const std::vector<std::string>& benchmarks, c
     {
         std::string program_name;
         // get compile string for benchmark
-        if(!(get_program_name(benchmarks[i], program_name)))
+        if(!(get_program_name(program_name, benchmarks[i])))
         {
             std::cout << "ERROR READING PROGRAM NAME" << std::endl;
             return 0;
@@ -129,7 +130,7 @@ int compile_and_log_all_benchmarks(const std::vector<std::string>& benchmarks, c
         {
             // get random optimisation string
             std::string optimisation_string;
-            generate_random_optimisation_string(optimisations, optimisation_string, num_optimisations_to_apply);
+            generate_random_optimisation_string(optimisation_string, optimisations, num_optimisations_to_apply);
 
             // compile and execute random optimisation string
             std::string exec_string = benchmark_compile_strings[i] + std::to_string(j) + optimisation_string;
@@ -165,7 +166,7 @@ int run_benchmarks_with_logging(const std::vector<std::string>& benchmarks, cons
 
         for(x = 0; x < test_n; x++)
         {
-            if (!(get_program_name(benchmarks[x], program_name)))
+            if (!(get_program_name(program_name, benchmarks[x])))
             {
                 std::cout << "ERROR READING PROGRAM NAME." << std::endl;
                 return 0;
@@ -233,4 +234,78 @@ int run_benchmarks_with_logging(const std::vector<std::string>& benchmarks, cons
     std::system("rm -rf tmp");
 
     return 1;
+}
+
+int format_benchmark_string(std::string& fmt_benchmark_string, const std::string& benchmark_to_fmt, const std::vector<std::string>& benchmarks)
+{
+    if(benchmarks.size() == 0)
+    {
+        std::cout << "ERROR: benchmarks has not been filled previously." << std::endl;
+        return 0;
+    }
+
+    int i, n;
+    n = benchmarks.size();
+    for(i = 0; i < n; i++)
+    {
+        // get the program name for each string in benchmarks
+        std::string program_name;
+        if(!(get_program_name(program_name, benchmarks[i])))
+        {
+            std::cout << "ERROR: Benchmarks vector formatted incorrectly." << std::endl;
+            return 0;
+        }
+
+        if(program_name == benchmark_to_fmt)
+            break;
+    }
+
+    // benchmark_to_fmt not found
+    if(i == n) { return 0; }
+
+    /* forming the benchmark string */
+    std::string default_string("gcc-13 -I polybench-c-3.2/utilities");
+
+    std::string temp = benchmarks[i];
+    int x;
+    n = temp.size() - 1;
+
+    for(x = n; x >= 0; x--)
+        if(temp[x] == '/')
+            break;
+
+    /* TODO: use new c++ formatting */
+    default_string.append(" -I " + temp.substr(0, x) + " polybench-c-3.2/utilities/polybench.c ");
+    default_string.append(temp + " -DPOLYBENCH_TIME -o " + DEFAULT_OUTPUT_LOCATION + benchmark_to_fmt);
+
+    fmt_benchmark_string = default_string;
+
+    return 1;
+}
+
+double run_given_string(const std::string& compile_string, const std::string& program_name)
+{
+    // TODO: run some validation on compile string
+
+    // TODO: check that correct files exist - if not point user in the correct direction
+
+
+    // convert to char*
+    std::system(compile_string.c_str());
+
+    /* run the program and pipe the output */
+
+    // ensuring files have been correctly made
+    std::system("mkdir -p data/tmp");
+
+    // running the program
+    std::string exec("./");
+    exec.append(DEFAULT_OUTPUT_LOCATION + program_name + " > data/tmp/tmpXX");
+    std::system(exec.c_str());
+
+    // gathering the execution time of the program and cleaning up
+    
+
+
+    return 0;
 }
