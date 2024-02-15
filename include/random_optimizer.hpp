@@ -10,4 +10,5 @@
 #endif
 
 #include "random_optimizer_utils.hpp"
+#include "optimizer.hpp"
 #include "misc_scripts.hpp"

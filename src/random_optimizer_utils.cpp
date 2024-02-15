@@ -261,7 +261,11 @@ int format_benchmark_string(std::string& fmt_benchmark_string, const std::string
     }
 
     // benchmark_to_fmt not found
-    if(i == n) { return 0; }
+    if(i == n)
+    {
+        std::cout << "ERROR: program name not found in benchmarks." << std::endl;
+        return 0;
+    }
 
     /* forming the benchmark string */
     std::string default_string("gcc-13 -I polybench-c-3.2/utilities");
@@ -276,7 +280,7 @@ int format_benchmark_string(std::string& fmt_benchmark_string, const std::string
 
     /* TODO: use new c++ formatting */
     default_string.append(" -I " + temp.substr(0, x) + " polybench-c-3.2/utilities/polybench.c ");
-    default_string.append(temp + " -DPOLYBENCH_TIME -o " + DEFAULT_OUTPUT_LOCATION + benchmark_to_fmt);
+    default_string.append(temp + " -DPOLYBENCH_TIME -o " + DEFAULT_EXEC_OUTPUT_LOCATION + benchmark_to_fmt);
 
     fmt_benchmark_string = default_string;
 
@@ -300,12 +304,30 @@ double run_given_string(const std::string& compile_string, const std::string& pr
 
     // running the program
     std::string exec("./");
-    exec.append(DEFAULT_OUTPUT_LOCATION + program_name + " > data/tmp/tmpXX");
+    exec.append(DEFAULT_EXEC_OUTPUT_LOCATION + program_name + " > " + DEFAULT_DATA_OUTPUT_LOCATION);
     std::system(exec.c_str());
 
     // gathering the execution time of the program and cleaning up
-    
+    double res;
+    std::ifstream output_file(DEFAULT_DATA_OUTPUT_LOCATION);
 
+    if(output_file.is_open())
+    {
+        std::string line;
+        while(getline(output_file, line))
+            res = std::stod(line);
+    }
+    else
+        return -1;
 
-    return 0;
+    /* cleaning up */
+    output_file.close();
+
+    // delete executable
+    std::system(((std::string)"rm " + DEFAULT_EXEC_OUTPUT_LOCATION + program_name).c_str());
+
+    // delete tmp data
+    std::system(((std::string)"rm " + DEFAULT_DATA_OUTPUT_LOCATION).c_str());
+
+    return res;    
 }

@@ -13,7 +13,8 @@
 #define DEFAULT_BENCHMARK_LIST_LOCATION "data/benchmark_list.txt"
 #define DEFAULT_OPTIMISATIONS_LIST_LOCATION "data/optimisations.txt"
 
-#define DEFAULT_OUTPUT_LOCATION "bin/tmp/"
+#define DEFAULT_EXEC_OUTPUT_LOCATION "bin/tmp/"
+#define DEFAULT_DATA_OUTPUT_LOCATION "data/tmp/tmpXX"
 
 #endif
 
