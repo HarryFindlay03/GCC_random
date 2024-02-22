@@ -14,14 +14,17 @@ misc_scripts.o:
 optimizer.o:
 	g++-13 -c -I include/ src/optimizer.cpp -o build/optimizer.o
 
+evolutionary.o:
+	g++-13 -c -I include/ src/evolutionary.cpp -o build/evolutionary.o
+
 random_optimizer_utils.o:
 	g++-13 -c -I include/ src/random_optimizer_utils.cpp -o build/random_optimizer_utils.o
 
 random_optimizer.o:
 	g++-13 -c -I include/ src/random_optimizer.cpp -o build/random_optimizer.o
 
-random_optimizer: generate_folder_structure clear_bin random_optimizer_utils.o optimizer.o random_optimizer.o
-	g++-13 -I include/ build/random_optimizer_utils.o build/optimizer.o build/random_optimizer.o -o random_optimizer
+random_optimizer: generate_folder_structure clear_bin random_optimizer_utils.o optimizer.o evolutionary.o random_optimizer.o
+	g++-13 -I include/ build/random_optimizer_utils.o build/optimizer.o build/evolutionary.o build/random_optimizer.o -o random_optimizer
 
 run_programs.o:
 	g++-13 -c -I include/ src/run_programs.cpp -o build/run_programs.o

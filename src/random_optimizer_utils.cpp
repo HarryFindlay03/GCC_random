@@ -64,6 +64,18 @@ int get_program_name(std::string& program_name, const std::string& benchmark_str
 }
 
 
+std::vector<std::string> convert_int_to_string_vector(const std::vector<int>& applied, const std::vector<std::string>& optimisations)
+{
+    std::vector<std::string> res(applied.size());
+
+    int i = 0 ;
+    for(auto elem : applied)
+        res[i++] = optimisations[elem];
+
+    return res;
+}
+
+
 /* TODO: rewrite this function to update a vector of strings of optimisations */
 void generate_random_optimisation_string(std::string& optimisation_string, const std::vector<std::string>& optimisations, int num_to_apply)
 {
@@ -80,6 +92,40 @@ void generate_random_optimisation_string(std::string& optimisation_string, const
     }
 
     return;
+}
+
+
+std::vector<int> generate_random_optimisation_vector(int num_optimisations, int num_to_apply)
+{
+    std::vector<int> opt_vector(num_to_apply);
+    int i, ran;
+
+    for(i = 0; i < num_to_apply; i++)
+        opt_vector[i] = rand() % num_optimisations;
+
+    return opt_vector;
+}
+
+
+std::string optimisation_int_vector_to_string(const std::vector<int>& opt_vector, const std::vector<std::string>& optimisations)
+{
+    std::string opt_string;
+
+    for(auto val : opt_vector)
+        opt_string.append(" " + optimisations[val]);
+
+    return opt_string;
+}
+
+
+std::string optimisation_string_vector_to_string(const std::vector<std::string>& opt_vector)
+{
+    std::string opt_string;
+
+    for(auto val : opt_vector)
+        opt_string.append(" " + val);
+
+    return opt_string;
 }
 
 

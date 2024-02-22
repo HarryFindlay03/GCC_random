@@ -24,13 +24,15 @@ int random_walk(std::vector<std::string>& applied_benchmarks, const std::string&
 
     int i, best_index;
     double curr_exec_time, best_exec_time;
-    std::string best_optimisations;
+    std::vector<int> best_optimisations;
 
     for(i = 0, best_index = 0; i < iterations; i++)
     {
         // generating optimisations to apply
-        std::string optimisation_string;
-        generate_random_optimisation_string(optimisation_string, optimisations, n);
+        // std::string optimisation_string;
+        // generate_random_optimisation_string(optimisation_string, optimisations, n);
+
+        auto opts = generate_random_optimisation_vector(optimisations.size(), n);
 
         /* apply and run optimisations on given program */
 
@@ -40,7 +42,8 @@ int random_walk(std::vector<std::string>& applied_benchmarks, const std::string&
             return 0;
 
         // append the optimisations to benchmark compile string
-        benchmark_compile_string.append(optimisation_string);
+        benchmark_compile_string.append(optimisation_int_vector_to_string(opts, optimisations));
+        // benchmark_compile_string.append(optimisation_string);
 
         // running which returns the speed of the program
         if((curr_exec_time = run_given_string(benchmark_compile_string, program_name)) == -1)
@@ -53,7 +56,7 @@ int random_walk(std::vector<std::string>& applied_benchmarks, const std::string&
         {
             best_index = i;
             best_exec_time = curr_exec_time;
-            best_optimisations = optimisation_string;
+            best_optimisations = opts;
         }
 
     }
@@ -63,7 +66,7 @@ int random_walk(std::vector<std::string>& applied_benchmarks, const std::string&
         // another funciton would apply these to a given benchmark string (just append to the end)
 
     std::cout << "BEST EXECUTION TIME: " << best_exec_time << std::endl;
-    std::cout << "BEST OPTIMISATION STRING: " << best_optimisations << std::endl;
+    std::cout << "BEST OPTIMISATION STRING: " << optimisation_int_vector_to_string(best_optimisations, optimisations) << std::endl;
     std::cout << "ITERATION AT: " << best_index << std::endl;
 
     return 1;

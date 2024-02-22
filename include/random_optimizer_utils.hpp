@@ -7,7 +7,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <array>
 #include <ctime>
+
+#define RANDOM_SEED 12345
 
 #define DEFAULT_BENCHMARK_COMPILE_STRING_LOCATION "data/benchmark_compile_strings.txt"
 #define DEFAULT_BENCHMARK_LIST_LOCATION "data/benchmark_list.txt"
@@ -53,6 +56,16 @@ int get_program_name(std::string& program_name, const std::string& benchmark_str
 
 
 /**
+ * @brief Converting an integer representation into a string representation, this is useful to compile the program or output information
+ * 
+ * @param applied 
+ * @param optimisations 
+ * 
+ * @return std::vector<std::string> 
+ */
+std::vector<std::string> convert_int_to_string_vector(const std::vector<int>& applied, const std::vector<std::string>& optimisations);
+
+/**
  * @brief generate list of optimisation strings to append to the end of a valid compile string
  * 
  * @param optimisations list of optimisations that can be applied
@@ -62,6 +75,28 @@ int get_program_name(std::string& program_name, const std::string& benchmark_str
  */
 void generate_random_optimisation_string(std::string& optimisation_string, const std::vector<std::string>& optimisations, int num_to_apply);
 
+
+/**
+ * @brief generate vector of strings containing a random selection of optimisations
+ * 
+ * @param num_optimisations
+ * @param num_to_apply
+ * 
+ * @return std::vector<int>
+ */
+std::vector<int> generate_random_optimisation_vector(int num_optimisations, int num_to_apply);
+
+
+/**
+ * @brief helper function to convert optimisation vector of integers to a standard string
+ * 
+ * @param opt_vector 
+ * @param optimisations
+ */
+std::string optimisation_int_vector_to_string(const std::vector<int>& opt_vector, const std::vector<std::string>& optimisations);
+
+
+std::string optimisation_string_vector_to_string(const std::vector<std::string>& opt_vector);
 
 /**
  * @brief compiles num_per_benchmark benchmark programs with random optimisations applied

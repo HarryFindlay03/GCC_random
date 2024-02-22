@@ -11,4 +11,5 @@
 
 #include "random_optimizer_utils.hpp"
 #include "optimizer.hpp"
+#include "evolutionary.hpp"
 #include "misc_scripts.hpp"
