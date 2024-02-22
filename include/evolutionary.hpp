@@ -20,8 +20,19 @@ std::vector<size_t> create_tournament_pool(const std::vector<size_t>& population
 
 size_t get_tournament_winner(const std::vector<size_t>& pool, const std::vector<size_t>& ordering);
 
+size_t play_tournament(const std::vector<size_t>& population, const std::vector<size_t>& ordering, int solution_length, int tournament_size);
+
 /* END TOURNAMENT FUNCTIONS */
 
+
+/* CROSSOVER FUNCTIONS */
+
+std::vector<size_t> ordered_crossover(const std::vector<size_t>& p1, const std::vector<size_t>& p2, int solution_length);
+
+void fill_ordered_child(std::vector<size_t>& child, const std::vector<size_t>& parent, int solution_length, int cut1, int cut2);
+
+
+/* END CROSSOVER FUNCTIONS*/
 
 /* MUTATION FUNCTIONS */
 

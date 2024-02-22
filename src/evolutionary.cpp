@@ -128,7 +128,83 @@ size_t get_tournament_winner(const std::vector<size_t>& pool, const std::vector<
 }
 
 
+size_t play_tournament(const std::vector<size_t>& population, const std::vector<size_t>& ordering, int solution_length, int tournament_size)
+{
+    auto pool = create_tournament_pool(population, solution_length, tournament_size);
+    size_t winner = get_tournament_winner(pool, ordering);
+
+    return winner;    
+}
+
+
 /* END TOURNAMENT FUNCTIONS */
+
+
+/* CROSSOVER FUNCTIONS */
+
+
+std::vector<size_t> ordered_crossover(const std::vector<size_t>& p1, const std::vector<size_t>& p2, int solution_length)
+{
+    std::vector<size_t> child1(solution_length);
+    std::vector<size_t> child2(solution_length);
+
+    // cut points
+    int cut1, cut2;
+    cut1 = rand() % solution_length;
+    cut2 = cut1 + (rand() % (solution_length - cut1));
+
+    // fill children with cut points
+    int i, j;
+    for(i = cut1; i < cut2 + 1; i++)
+    {
+        child1[i] = p2[i];
+        child2[i] = p1[i];
+    }
+
+    fill_ordered_child(child1, p1, solution_length, cut1, cut2);
+    fill_ordered_child(child2, p2, solution_length, cut1, cut2);
+
+    child1.insert(child1.end(), child2.begin(), child2.end());
+
+    return child1;
+}
+
+
+void fill_ordered_child(std::vector<size_t>& child, const std::vector<size_t>& parent, int solution_length, int cut1, int cut2)
+{
+    int rem_n = solution_length - (cut2 - cut1 + 1);
+    std::vector<size_t> remaining(rem_n);
+
+    int i, j, r_pos, c_pos, within;
+
+    // find remaining
+    r_pos = 0;
+    for(auto p_val : parent)
+    {
+        within = 0;
+        for(auto c_val : child)
+        {
+            if(p_val == c_val)
+                within = 1;
+        }
+        if(!within)
+            remaining[r_pos++] = p_val;
+    }
+
+    // fill in child with the remaining relative order in parent
+    c_pos = 0;
+    for(auto rem_v : remaining)
+    {
+        if(c_pos == cut1)
+            c_pos = cut2 + 1;
+        child[c_pos++] = rem_v;
+    }
+
+    return;
+}
+
+
+/* END CROSSOVER FUNCTIONS */
 
 
 /* MUTATION FUNCTIONS */
